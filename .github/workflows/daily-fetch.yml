@@ -1,0 +1,32 @@
+name: Daily Stooq Fetch
+
+on:
+  schedule:
+    - cron: '0 6 * * 1-5'   # 06:00 UTC, weekdays (after US market close + Stooq EOD update)
+  workflow_dispatch:         # manual trigger for testing or re-runs
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Run fetch
+        env:
+          STOOQ_APIKEY: ${{ secrets.STOOQ_APIKEY }}
+        run: node fetch.js
+      - name: Commit if changed
+        run: |
+          git config user.name "funnel-bot"
+          git config user.email "actions@github.com"
+          git add latest.json
+          if git diff --staged --quiet; then
+            echo "No changes to commit."
+          else
+            git commit -m "Update prices for $(date -u +%Y-%m-%d)"
+            git push
+          fi
