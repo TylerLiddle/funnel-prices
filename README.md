@@ -5,7 +5,7 @@ Daily-refreshed price-data mirror for The Funnel prototype's Stage 2 v6 architec
 A scheduled GitHub Action runs `fetch.js` every weekday at **06:00 UTC**, pulls the trailing 14 months of daily closes for 29 industry ETFs plus the S&P 500 from Stooq, pulls the most-recent 10-year Treasury par yield from home.treasury.gov, normalises the result into a single bundle JSON, and commits it to `main` as `latest.json`. The Funnel prototype's Phase A retrieval reads the bundle with a single `web_fetch` against:
 
 ```
-https://raw.githubusercontent.com/{handle}/funnel-prices/main/latest.json
+https://raw.githubusercontent.com/TylerLiddle/funnel-prices/main/latest.json
 ```
 
 ## Bundle schema (version 1.0)
@@ -73,4 +73,4 @@ node fetch.js
 
 This writes `latest.json` to the repo root. Exit code 0 = success (including partial fetches with warnings); exit code 1 = unrecoverable failure (zero industries fetched, Treasury feed unparseable, or schema validation fails).
 
-Schema version: **1.0**. Bundle URL: `https://raw.githubusercontent.com/{handle}/funnel-prices/main/latest.json`.
+Schema version: **1.0**. Bundle URL: `https://raw.githubusercontent.com/TylerLiddle/funnel-prices/main/latest.json`.
