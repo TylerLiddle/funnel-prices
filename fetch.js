@@ -11,10 +11,12 @@ const fs = require('fs');
 const path = require('path');
 
 // Canonical industry → Stooq ETF ticker mapping. Order and names MUST match
-// INDUSTRY_TO_ETF_TICKER in Funnel_AI_V4_p1_24.html verbatim — Phase A joins
-// industries by `name`. Some industries share a ticker (XLU, XLI, IBB) where
-// the prototype declares the mapping as a sector-level proxy; the bundle
-// duplicates the price series for each consuming industry deliberately.
+// INDUSTRY_TO_ETF_TICKER in the working HTML file verbatim — Phase A joins
+// industries by `name`. 2026-05-15: three substitutions to purpose-built ETFs
+// to eliminate prior intra-sector ticker duplicates (Water & Waste → PHO,
+// Automotive → CARZ, Precision Medicine → IDNA). All 29 industries now have
+// distinct tickers so Phase B intra-sector percentile ranking is not
+// corrupted by byte-identical price series.
 const INDUSTRIES = [
   // Defensive (9)
   { name: 'Healthcare',                                  ticker: 'XLV'  },
@@ -23,7 +25,7 @@ const INDUSTRIES = [
   { name: 'Insurance',                                   ticker: 'KIE'  },
   { name: 'Pharmaceuticals',                             ticker: 'IHE'  },
   { name: 'Medical Devices',                             ticker: 'IHI'  },
-  { name: 'Water & Waste',                               ticker: 'XLU'  },
+  { name: 'Water & Waste',                               ticker: 'PHO'  },
   { name: 'Telecoms',                                    ticker: 'XTL'  },
   { name: 'Defence & Aerospace',                         ticker: 'ITA'  },
   // Secular (10)
@@ -36,13 +38,13 @@ const INDUSTRIES = [
   { name: 'E-commerce & Logistics',                      ticker: 'IBUY' },
   { name: 'Electric Vehicles & Battery Tech',            ticker: 'IDRV' },
   { name: 'Robotics & Automation',                       ticker: 'BOTZ' },
-  { name: 'Precision Medicine',                          ticker: 'IBB'  },
+  { name: 'Precision Medicine',                          ticker: 'IDNA' },
   // Cyclical (10)
   { name: 'Banks & Financial Services',                  ticker: 'KBE'  },
   { name: 'Energy (Oil & Gas)',                          ticker: 'XLE'  },
   { name: 'Mining & Materials',                          ticker: 'XME'  },
   { name: 'Industrials & Capital Goods',                 ticker: 'XLI'  },
-  { name: 'Automotive',                                  ticker: 'XLI'  },
+  { name: 'Automotive',                                  ticker: 'CARZ' },
   { name: 'Chemicals',                                   ticker: 'XLB'  },
   { name: 'Construction & Real Estate',                  ticker: 'XLRE' },
   { name: 'Shipping & Freight',                          ticker: 'IYT'  },
